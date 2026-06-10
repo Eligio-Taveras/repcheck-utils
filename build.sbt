@@ -60,7 +60,7 @@ lazy val commonSettings = Seq(
 )
 
 lazy val root = (project in file("."))
-  .aggregate(repcheckutils, utilsDoobie, utilsTesting, docGenerator)
+  .aggregate(repcheckutils, utilsDoobie, utilsTestingDb, docGenerator)
   .settings(
     commonSettings,
     name := "repcheck-utils-root",
@@ -101,12 +101,12 @@ lazy val utilsDoobie = (project in file("utils-doobie"))
     exceptionUniquenessRootPackages := Seq("com.repcheck")
   )
 
-lazy val utilsTesting = (project in file("utils-testing"))
+lazy val utilsTestingDb = (project in file("utils-testing-db"))
   .dependsOn(repcheckutils)
   .enablePlugins(com.repcheck.sbt.ExceptionUniquenessPlugin)
   .settings(
     commonSettings,
-    name := "repcheck-utils-testing",
+    name := "repcheck-utils-testing-db",
     // Docker-backed test fixtures; schema-agnostic (initSchema hook), so only effects + the JDBC driver
     libraryDependencies ++= catsEffect ++ testDeps,
     libraryDependencies += "org.postgresql" % "postgresql" % "42.7.4",
