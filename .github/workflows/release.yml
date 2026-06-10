@@ -98,7 +98,7 @@ jobs:
 
       - name: Publish to GitHub Packages
         if: steps.labels.outputs.bump != 'skip'
-        run: sbt repcheckutils/publish utilsDoobie/publish
+        run: sbt repcheckutils/publish utilsDoobie/publish utilsTesting/publish
 
       # ── Create a GitHub Release for visibility ──
       - name: Create GitHub Release
