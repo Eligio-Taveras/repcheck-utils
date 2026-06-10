@@ -60,7 +60,7 @@ lazy val commonSettings = Seq(
 )
 
 lazy val root = (project in file("."))
-  .aggregate(repcheckutils, docGenerator)
+  .aggregate(repcheckutils, utilsDoobie, docGenerator)
   .settings(
     commonSettings,
     name := "repcheck-utils-root",
@@ -80,6 +80,21 @@ lazy val repcheckutils = (project in file("repcheck-utils"))
     Test / scalacOptions += "-Wconf:msg=unused value of type:s",
     Test / scalacOptions += "-Wconf:msg=is not declared infix:s",
     // Coverage gate: every file must be >= 95% statement AND branch coverage or CI fails
+    coverageMinimumStmtPerFile   := 95,
+    coverageMinimumBranchPerFile := 95,
+    coverageFailOnMinimum         := true,
+    exceptionUniquenessRootPackages := Seq("com.repcheck")
+  )
+
+lazy val utilsDoobie = (project in file("utils-doobie"))
+  .enablePlugins(com.repcheck.sbt.ExceptionUniquenessPlugin)
+  .settings(
+    commonSettings,
+    name := "repcheck-utils-doobie",
+    // Doobie/Postgres codecs split from the core so consumers that don't touch a database stay doobie-free
+    libraryDependencies ++= circe ++ doobie ++ testDeps,
+    Test / scalacOptions += "-Wconf:msg=unused value of type:s",
+    Test / scalacOptions += "-Wconf:msg=is not declared infix:s",
     coverageMinimumStmtPerFile   := 95,
     coverageMinimumBranchPerFile := 95,
     coverageFailOnMinimum         := true,
