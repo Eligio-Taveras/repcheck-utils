@@ -74,6 +74,8 @@ lazy val repcheckutils = (project in file("repcheck-utils"))
     name := "repcheck-utils",
     // Foundation library: no repcheck deps, no HTTP/streaming — only effects, codecs, config
     libraryDependencies ++= circe ++ pureConfig ++ catsEffect ++ testDeps,
+    // Provided: tags/E2ETest extends org.scalatest.Tag; consumers always have scalatest on their test classpath
+    libraryDependencies += "org.scalatest" %% "scalatest" % "3.2.18" % Provided,
     // Suppress Scala 3 ScalaTest-matcher warnings in TEST sources only (mirrors llm-adapter / shared-models)
     Test / scalacOptions += "-Wconf:msg=unused value of type:s",
     Test / scalacOptions += "-Wconf:msg=is not declared infix:s",
