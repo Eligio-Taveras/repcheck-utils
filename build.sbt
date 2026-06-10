@@ -60,7 +60,7 @@ lazy val commonSettings = Seq(
 )
 
 lazy val root = (project in file("."))
-  .aggregate(repcheckutils, utilsDoobie, docGenerator)
+  .aggregate(repcheckutils, utilsDoobie, utilsTestingDb, docGenerator)
   .settings(
     commonSettings,
     name := "repcheck-utils-root",
@@ -95,6 +95,24 @@ lazy val utilsDoobie = (project in file("utils-doobie"))
     libraryDependencies ++= circe ++ doobie ++ testDeps,
     Test / scalacOptions += "-Wconf:msg=unused value of type:s",
     Test / scalacOptions += "-Wconf:msg=is not declared infix:s",
+    coverageMinimumStmtPerFile   := 95,
+    coverageMinimumBranchPerFile := 95,
+    coverageFailOnMinimum         := true,
+    exceptionUniquenessRootPackages := Seq("com.repcheck")
+  )
+
+lazy val utilsTestingDb = (project in file("utils-testing-db"))
+  .dependsOn(repcheckutils)
+  .enablePlugins(com.repcheck.sbt.ExceptionUniquenessPlugin)
+  .settings(
+    commonSettings,
+    name := "repcheck-utils-testing-db",
+    // Docker-backed test fixtures; schema-agnostic (initSchema hook), so only effects + the JDBC driver
+    libraryDependencies ++= catsEffect ++ testDeps,
+    libraryDependencies += "org.postgresql" % "postgresql" % "42.7.4",
+    Test / scalacOptions += "-Wconf:msg=unused value of type:s",
+    Test / scalacOptions += "-Wconf:msg=is not declared infix:s",
+    // This module's own tests run REAL containers (in CI too) so the fixture's container paths meet the gate
     coverageMinimumStmtPerFile   := 95,
     coverageMinimumBranchPerFile := 95,
     coverageFailOnMinimum         := true,
