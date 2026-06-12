@@ -66,6 +66,9 @@ object Dependencies {
   val http4sEmber: Seq[ModuleID] =
     Seq(emberClient, emberServer, http4sDsl, http4sCirce)
 
+  // just the Uri/core types — utils-http4s must not drag the ember stack into consumers
+  val http4sCore: Seq[ModuleID] = Seq("org.http4s" %% "http4s-core" % http4sVersion)
+
   val fs2: Seq[ModuleID] = Seq(fs2Core, fs2IO, fs2ReactiveStreams, fs2Scodec)
 
   val pubSub: Seq[ModuleID] = Seq(gcpPubSub)
